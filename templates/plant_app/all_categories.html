@@ -1,0 +1,30 @@
+{% extends "../base.html" %}
+
+{% block app_head %}Wybierz gatunek którego szukasz{% endblock %}
+
+{% csrf_token %}
+
+{% block content %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Kategoria</th>
+      <th scope="col">Zdjęcie</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for category in categories %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td> <a class="nav-link text-secondary" href="{% url 'chosen-category' category.slug %}"> {{ category.name }}</td>
+        {% if category.picture.url %}
+      <td><img width="200" height="200" class="img-thumbnail" src="{{ category.picture.url }}/"></td>
+        {% endif %}
+    </tr>
+   </a>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

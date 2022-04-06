@@ -1,0 +1,20 @@
+Django==3.2.9
+pytz==2021.3
+django-extensions
+bpython
+bs4
+requests
+sanic
+Pillow
+Scrapy
+django-scrapy
+flake8
+pip install django scrapy scrapyd python-scrapyd-api
+
+scrapy-djangoitem
+
+requests-html
+
+flake8
+pytest
+pytest-django

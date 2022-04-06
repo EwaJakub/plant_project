@@ -1,0 +1,32 @@
+{% extends "../base.html" %}
+
+{% block app_head %} Kategoria: {{ choosen_windowside.get_direction_display }} {% endblock %}
+
+{% csrf_token %}
+
+{% block content %}
+<p> {{ choosen_windowside.get_description_display }}</p>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Roślina</th>
+      <th scope="col">Gatunek</th>
+      <th scope="col">Zdjęcie</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for plant in choosen_plants %}
+      <th scope="row">{{ forloop.counter }}</th>
+      <td> <a class="nav-link text-secondary" href="{% url 'plant-view' plant.category.slug plant.slug %}">{{ plant.name }}</td>
+      <td>{{ plant.category.name }}</td>
+        {% if plant.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture.url }}/"></td>
+        {% endif %}
+    </tr>
+   </a>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% csrf_token %}
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Zazieleń pokój</title>
+    <meta name="description" content="Wyszukiwarka roślin">
+	<meta name="keywords" content="rośliny doniczkowe, rośliny, zieleń, pielęgnacja roślin">
+	<meta name="author" content="Ewa Jakubowska">
+	<meta http-equiv="X-Ua-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="static/bootstrap-5.1.3-dist/css/bootstrap.css">
+{% csrf_token %}
+{% block head %}
+      {% block style %}
+      {% load static %}
+      <link href="/static/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+      <link href="/static/styles.css" rel="stylesheet" crossorigin="anonymous">
+      <script src="/static/bootstrap-5.1.3-dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+      {% endblock%}
+      <title>{% block title %}{% endblock %} </title>
+    {% endblock %}
+
+</head>
+<body>
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+   <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/">
+       <img src="/static/logo-sklepu.png" alt="" width="220" height="70" class="d-inline-block align-text-top">
+  </a>
+  <div class="container-fluid">
+    <form class="d-flex" method="POST" action="{% url 'search-result' %}">
+      {% csrf_token %}
+      <input class="form-control me-2" name="searched" type="search" placeholder="Szukaj rośliny" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Szukaj</button>
+    </form>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="#about">O nas</a>
+        <a class="nav-link" href="#contact">Kontakt</a>
+        <a class="nav-link active" aria-current="page" href="{% url 'all-plants-list' %}">Wszystkie rośliny</a>
+        <a class="nav-link active" aria-current="page" href="{% url 'all-categories-list' %}">Gatunki</a>
+        <a class="nav-link active" aria-current="page" href="{% url 'plant-filter' %}">Filtruj kategorie</a>
+            {% if request.user.is_authenticated %}
+        <a class="nav-link active text-success"> Zalogowany jako: {{ request.user.username }} </a>
+        <a class="nav-link active text-decoration-underline" aria-current="page" href="{% url 'logout' %}">Wyloguj</a>
+            {% if user.userprofile.id %}
+        <a class="nav-link active" aria-current="page" href="{% url 'my-profile' %}">Mój profil</a>
+            {% else %}
+        <a class="nav-link active" aria-current="page" href="{% url 'create-my-profile' %}">Mój profil</a>
+            {% endif %}
+        <a class="nav-link active" aria-current="page" href="{% url 'my-plants' %}">Moje rośliny</a>
+        <a class="nav-link active" aria-current="page" href="{% url 'my-wishlist' %}">Wishlista</a>
+            {% else %}
+        <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Zaloguj</a>
+        <a class="nav-link active" aria-current="page" href="{% url 'add-user' %}">Załóż konto</a>
+            {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+  </div>
+  </div>
+</nav>
+</header>
+<div class="container-fluid">
+  <div class="row">
+  <nav id="sidebarMenu" class=" col-lg-2 d-md-block border border-right sidebar collapse">
+  <div class="position-sticky pt-3 border-dark">
+    <h6 class="sidebar-heading d-flex justify-content-between big align-items-center px-3 mt-4 mb-1 text-success">
+      <span>SZUKAJ ROŚLINY WEDŁUG:</span>
+    <h6 class="sidebar-heading d-flex justify-content-between small align-items-center px-3 mt-4 mb-1 text-success">
+      <span>POMIESZCZENIE</span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      {% for room in homeroom %}
+        <li class="nav-item">
+          <a class="nav-link text-secondary small" href="{% url 'chosen-homeroom' room.slug %}">
+            <span data-feather="file-text"></span>
+            {{ room.get_room_display }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between small align-items-center px-3 mt-4 mb-1 text-success">
+      <span>KIERUNEK ŚWIATA</span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      {% for side in windowside %}
+        <li class="nav-item">
+          <a class="nav-link text-secondary small" href="{% url 'chosen-windowside' side.slug %}">
+            <span data-feather="file-text"></span>
+            {{ side.get_direction_display }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between small align-items-center px-3 mt-4 mb-1 text-success">
+    <span>UMIEJSCOWIENIE</span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      {% for place in roompart %}
+        <li class="nav-item">
+          <a class="nav-link text-secondary small" href="{% url 'chosen-roompart' place.slug %}">
+            <span data-feather="file-text"></span>
+            {{ place.get_roompart_display }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between small align-items-center px-3 mt-4 mb-1 text-success">
+    <span>WPŁYW NA ZWIERZĘTA</span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+          <a class="nav-link text-secondary small" href="{% url 'chosen-influence' influence.1.1|slugify %}">
+            <span data-feather="file-text"></span>
+            {{ influence.1.1 }}
+          </a>
+        </li>
+    </ul>
+      <h6 class="sidebar-heading d-flex justify-content-between small align-items-center px-3 mt-4 mb-1 text-success">
+    <span>WPŁYW NA POWIETRZE</span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+          <a class="nav-link text-secondary small" href="{% url 'chosen-influence' purifying.0.1|slugify %}">
+            <span data-feather="file-text"></span>
+            {{ purifying.0.1 }}
+          </a>
+        </li>
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between small align-items-center px-3 mt-4 mb-1 text-success">
+    <span>GATUNKI</span>
+      <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      {% for category in categories %}
+        <li class="nav-item">
+          <a class="nav-link text-secondary small" href="{% url 'chosen-category' category.slug %}">
+            <span data-feather="file-text"></span>
+            <span data-feather="file-text"></span>
+            {{ category.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+        <main class="col-md-3 ms-sm-auto col-lg-10 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+              {% block app_head %}{% endblock %}
+            </h1>
+          </div>
+          {% block content %}{% endblock %}
+        </main>
+      </div>
+    </div>
+</div>
+<footer class="bd-footer bg-dark">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-3 mb-3">
+        <a class="d-inline-flex align-items-center mb-2 link-dark text-decoration-none" href="/" aria-label="Zazieleń pokój">
+          <img src="/static/logo-sklepu.png" alt="" width="280" height="90" class="d-inline-block align-text-top">
+        </a>
+      </div>
+      <div class="col-8 col-lg-3 offset-lg-2 mb-2 text-light text" id="about">
+        <h5>O nas</h5>
+          <ul class="list-unstyled big text-muted text">
+          <li class="mb-2">Dzięki nam dobierzesz odpowiednią roślinę do każdego wnętrza!</li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-3 offset-lg-1 mb-2 text-light text" id="contact">
+        <h5>Kontakt</h5>
+         <ul class="list-unstyled big text-muted">
+          <li class="mb-2">Zadzwoń: +48 666 666 666
+            <br> Adres email: zazielenpokoj@gmail.com</a>
+            <br> Zazieleń pokój sp. z o.o.
+            <br> Warszawska 6,
+            <br> 66-666 Warszawa</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    <div class="container-fluid text-muted">
+    <div id="footer bg-dark">
+      {% block footer %}
+        © Copyright 2022 by <a href="mailto:ewa.jak@onet.pl">Ewa</a>.
+      {% endblock %}
+    </div>
+</footer>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+
+    <script src="static/bootstrap-5.1.3-dist//js/bootstrap.js"></script>
+</body>
+</html>

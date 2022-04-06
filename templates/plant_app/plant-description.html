@@ -1,0 +1,42 @@
+{% extends "../base.html" %}
+
+{% block app_head %}Opis rośliny{% endblock %}
+
+{% csrf_token %}
+
+{% block content %}
+
+    <p> Nazwa rośliny: {{ plant.name }} </p>
+    <p> Nazwa kategorii: <b>{{ plant.category.name }}</b> </p>
+    <p> Opis: {{ plant.description}} </p>
+    {% if plant.picture.url %}
+    <p> <img src="{{ plant.picture.url }}/"> </p>
+    {% endif %}
+    <p> Podlewanie: {{ plant.watering_description}} </p>
+    <p> Nasłonecznienie: {{ plant.solar_description}} </p>
+    <p> Wpływ na rośliny: <b> {{ plant.get_influence_display }} </b> </p>
+    <p> Wpływ na powietrze: <b> {{ plant.get_purifying_display }} </b> </p>
+    <p> Najlepiej wybrać pomieszczenie z oknem w kierunku: </p>
+        {% for element in window_side %}
+    <br> <b> {{ element.get_direction_display }} </b> </br>
+        {% endfor %}
+    </p>
+        <p> Najlepsze pomieszczenia w mieszkaniu to: </p>
+        {% for element in homeroom %}
+    <br> <b> {{ element.get_room_display }} </b> </br>
+        {% endfor %}
+    </p>
+        <p> Gdzie w pomieszczeniu będzie mu najlepiej: </p>
+        {% for element in roompart %}
+    <br> <b> {{ element.get_roompart_display }} </b> </br>
+        {% endfor %}
+    </p>
+     <form method="post" enctype='multipart/form-data'>
+         {% csrf_token %}
+     {% if request.user.is_authenticated %}
+        <input class="btn btn-success" name="wishlist" type="submit" value="Dodaj do wishlisty">
+        <input class="btn btn-success" name="my-plants" type="submit" value="Dodaj do moich roślin">
+    {% endif %}
+     </form>
+
+{% endblock %}

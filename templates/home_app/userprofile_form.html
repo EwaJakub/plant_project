@@ -1,0 +1,39 @@
+{% extends "../base.html" %}
+
+{% block app_head %}Uzupełnij dane profilowe użytkownika: {{ request.user.username }}  {% endblock %}
+
+{% block content %}
+<div>
+        {% if messages %}
+            {% for message in messages %}
+    <p class="btn btn-danger"> {{ message|safe }}  </p>
+            {% endfor %}
+        {% endif %}
+         </form>
+</div>
+    <form method="post" enctype='multipart/form-data'>
+        <div class="mb-3 form-control">
+        {% csrf_token %}
+        {% for field in form %}
+    <br><div class="row">
+       <div class="col-md-2 ms-sm-auto col-lg-2 px-md-6">
+       {{ field.label_tag }}
+        {% if field.help_text %}
+          <sup>{{ field.help_text }}</sup>
+
+        {% endif %}
+
+       </div><div class="col-md-10 pull-left">
+         {{ field }}
+       </div>
+    </div>
+ {% endfor %}
+     <br> <input class="btn btn-success" type="submit" value="Zapisz dane">
+        </div>
+     </form>
+      <div>
+
+</div>
+
+
+{% endblock %}

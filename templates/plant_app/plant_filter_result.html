@@ -1,0 +1,37 @@
+{% extends "../base.html" %}
+
+{% block app_head %}Przefiltrowane wyniki: {% endblock %}
+
+{% csrf_token %}
+
+{% block content %}
+<form class="d-flex" method="POST" action="{% url 'plant-filter-result' %}">
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Roślina</th>
+      <th scope="col">Gatunek</th>
+      <th scope="col">Zdjęcie</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for element in all_plants %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td> <a class="nav-link text-secondary" href="{% url 'plant-view' element.category.slug element.slug %}">{{ element.name }}</td>
+      <td>{{ element.category.name }}</td>
+        {% if element.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ element.picture.url }}/"></td>
+        {% endif %}
+    </tr>
+      {% empty %}
+          <tr>
+            <td colspan="4">Brak wyników wyszukiwania</td>
+          </tr>
+    </a>
+  {% endfor %}
+  </tbody>
+</table>
+</form>
+{% endblock %}

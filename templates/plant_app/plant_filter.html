@@ -1,0 +1,16 @@
+{% extends "../base.html" %}
+
+{% block app_head %}Wybierz czego szukasz:{% endblock %}
+
+{% block content %}
+    {{msg}}
+    <form action="{% url 'plant-filter' %}" method="POST">
+      {% csrf_token %}
+      {{ form }}
+   <div class="d-grid gap-2 d-md-block">
+      <input class="btn btn-success" type="submit" value="Szukaj"  %}">
+   </form>
+        {% if category %}
+        {{ category }}
+        {% endif %}
+{% endblock %}

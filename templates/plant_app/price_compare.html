@@ -1,0 +1,98 @@
+{% extends "../base.html" %}
+
+{% block app_head %} {{ compared_plant.name }} {% endblock %}
+
+{% block content %}
+<form class="d-flex" method="POST" enctype='multipart/form-data'>
+  {% csrf_token %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Roślina</th>
+      <th scope="col">Cena</th>
+      <th scope="col">Zdjęcie</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for plant in jungle_boogie_plants %}
+      <form class="d-flex" method="POST" enctype='multipart/form-data'>
+    <tr>
+      <th scope="row">
+          {% load static %}
+        <img width="100" height="100" src="/static/Jungle_Boogie_poziom_pink_t.svg">
+      </th>
+      <td> <a class="nav-link text-secondary" href="{{ plant.link }}"> {{ plant.name }} </td>
+      <td>{{ plant.price }}</td>
+        {% if plant.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture }}"></td>
+        {% endif %}
+    </tr>
+    </a>
+       {% empty %}
+          <tr>
+            <td colspan="4">Brak wyników w JungleBoogie</td>
+          </tr>
+  {% endfor %}
+       {% for plant in zielony_parapet_plants %}
+    <tr>
+      <th scope="row">
+              {% load static %}
+         <img width="140" height="40" src="/static/zielony-parapet-logo-1618048606.jpg"">
+      </th>
+      <td> <a class="nav-link text-secondary" href="{{ plant.link }}"> {{ plant.name }} </td>
+      <td>{{ plant.price }}</td>
+        {% if plant.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture }}"></td>
+
+        {% endif %}
+    </tr>
+    </a>
+       {% empty %}
+          <tr>
+            <td colspan="4">Brak wyników w Zielonym Parapecie</td>
+          </tr>
+  {% endfor %}
+         {% for plant in flora_point_plants %}
+    <tr>
+      <th scope="row">
+          {% load static %}
+        <img width="80" height="80" src="/static/IgNooaAg_400x400.jpg">
+      </th>
+      <td> <a class="nav-link text-secondary" href="{{ plant.link }}"> {{ plant.name }} </td>
+      <td>{{ plant.price }}</td>
+        {% if plant.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture }}"></td>
+
+        {% endif %}
+    </tr>
+    </a>
+       {% empty %}
+          <tr>
+            <td colspan="4">Brak wyników w Flora Poincie</td>
+          </tr>
+  {% endfor %}
+          {% for plant in cocaflora_plants %}
+    <tr>
+      <th scope="row">
+          {% load static %}
+        <img width="120" height="40" src="/static/logo.png">
+      </th>
+      <td> <a class="nav-link text-secondary" href="{{ plant.link }}"> {{ plant.name }} </td>
+      <td>{{ plant.price }}</td>
+        {% if plant.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture }}"></td>
+
+        {% endif %}
+    </tr>
+    </a>
+       {% empty %}
+          <tr>
+            <td colspan="4">Brak wyników Cocaflorze</td>
+          </tr>
+  {% endfor %}
+      </form>
+  </tbody>
+</table>
+
+{% endblock %}
