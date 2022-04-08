@@ -5,6 +5,18 @@
 {% csrf_token %}
 
 {% block content %}
+    <style>
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+    </style>
 <table class="table table-hover">
   <thead>
     <tr>
@@ -14,9 +26,9 @@
     </tr>
   </thead>
   <tbody>
-      {% for category in categories %}
+      {% for category in page.object_list %}
     <tr>
-      <th scope="row">{{ forloop.counter }}</th>
+      <th scope="row">{{ page.start_index|add:forloop.counter0 }}</th>
       <td> <a class="nav-link text-secondary" href="{% url 'chosen-category' category.slug %}"> {{ category.name }}</td>
         {% if category.picture.url %}
       <td><img width="200" height="200" class="img-thumbnail" src="{{ category.picture.url }}/"></td>
@@ -25,6 +37,18 @@
    </a>
   {% endfor %}
   </tbody>
+  </div>
+    </div>
 </table>
-
+    <div class="pagination">
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}">< poprzednia</a>
+        {% endif %}
+      {% for pg in page.paginator.page_range %}
+            <a href="?page={{pg}}">{{pg}}</a>
+      {% endfor %}
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}">następna ></a>
+        {% endif %}
+</div>
 {% endblock %}

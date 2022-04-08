@@ -2,6 +2,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.text import slugify
+from django.core.paginator import Paginator
 
 from home_app.models import UserProfile
 from django.contrib.auth.models import User
@@ -15,7 +16,9 @@ import operator
 from django.db.models import Q
 from functools import reduce
 
-from .models import Plant, Category, WindowSide, HomeRoom, RoomPart, ANIMAL_INFLUENCE, AIR_PURIFYING, ANIMAL_INFLUENCE_DESCRIPTION, AIRPURIFYING_DESCRIPTION, ScrapyJungleBoogie, ScrapyZielonyParapet, ScrapyCocaflora, ScrapyFloraPoint
+from .models import Plant, Category, WindowSide, HomeRoom, RoomPart, ANIMAL_INFLUENCE, AIR_PURIFYING, \
+    ANIMAL_INFLUENCE_DESCRIPTION, AIRPURIFYING_DESCRIPTION, ScrapyJungleBoogie, ScrapyZielonyParapet, ScrapyCocaflora, \
+    ScrapyFloraPoint
 from .form import FilterPlantForm
 
 from bs4 import BeautifulSoup
@@ -38,8 +41,10 @@ from bs4 import BeautifulSoup
 #         footer = offer.find('div', class_='woocommerce-loop-product__title')
 #         name = footer.find('a', class_='woocommerce-LoopProduct-link woocommerce-loop-product__link')
 #         footer_2 = offer.find('span', class_='price')
-#         price = parse_price((footer_2.find('span', class_='woocommerce-Price-amount amount').get_text())[0:-3])    #ucina /xa0zL
-#         link = name['href']  # nasza nazwa rośliny będzie odnośnikiek linku, lub gdy mamy name.get_text() dodajemy oddzielnie link np po kliknięciu przycisku idz do sklepu
+#         price = parse_price((footer_2.find('span', class_='woocommerce-Price-amount amount').get_text())[0:-3])
+#         #ucina /xa0zL
+#         link = name['href']  # nasza nazwa rośliny będzie odnośnikiek linku, lub gdy mamy name.get_text()
+#         dodajemy oddzielnie link np po kliknięciu przycisku idz do sklepu
 #         message.append(f'Nazwa rośliny: {name}'
 #                        f'Link: {link}'
 #                        f'Cena: {price}'
@@ -48,7 +53,7 @@ from bs4 import BeautifulSoup
 
 
 
-# Plant View which extracts data from Plant models in connection to passed context and adding plant to my plants and whishlist
+# Plant View which extracts data from Plant models in connection to context and adding plant to my plants and whishlist
 class PlantView(View):
     template_name = 'plant_app/plant-description.html'   # {category}/plant-description/{plant.pk}
 
@@ -73,7 +78,7 @@ class PlantView(View):
         home_room = HomeRoom.objects.filter(plants=plant.pk)
         room_part = RoomPart.objects.filter(plants=plant.pk)
         try:
-            userprofile = UserProfile.objects.get(user=user.pk)  # if User have UserProfile plants can be added to User private lists
+            userprofile = UserProfile.objects.get(user=user.pk)  # if User have UserProfile plants can be added to User
             if request.POST.get('wishlist'):
                 userprofile.wishlist.add(plant)
                 return redirect('my-wishlist')
@@ -99,15 +104,20 @@ class CategoryView(View):
     template_name = 'plant_app/all_categories.html'
 
     def get(self, request):
-        categories = Category.objects.all()
-        context = {'categories': categories}
+        categories = Category.objects.all().order_by('name')
+        p = Paginator(categories, 10)
+        page_number = request.GET.get('page')
+        page = p.get_page(page_number)
+        context = {'categories': categories,
+                   'page': page}
         return render(request, self.template_name, context)
 
 
 # View for adding new plants -> easier way by django.admin
 # class PlantAddView(CreateView):
 #     model = Plant
-#     fields = ['name', 'category', 'description', 'picture', 'watering_description', 'solar_description', 'influence', 'purifying']
+#     fields = ['name', 'category', 'description', 'picture', 'watering_description', 'solar_description', 'influence',
+#     'purifying']
 #     success_url = '/'
 
 
@@ -116,7 +126,13 @@ class PlantListView(View):
     template_name = 'plant_app/all_plants.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        plants = Plant.objects.all().order_by('name')
+        p = Paginator(plants, 10)
+        page_number = request.GET.get('page')
+        page = p.get_page(page_number)
+        context = {'plants': plants,
+                   'page': page}
+        return render(request, self.template_name, context)
 
 
 # Class for search bar, shows results of plants that contains requested searched value
@@ -132,7 +148,8 @@ class SearchResultView(View):
                 return redirect('home-view')
             elif searched_value:
                 searched_plants = Plant.objects.filter(name__contains=searched_value)
-                return render(request, 'plant_app/search_result.html', {'searched_plants': searched_plants, 'searched_value': searched_value})
+                return render(request, 'plant_app/search_result.html', {'searched_plants': searched_plants,
+                                                                        'searched_value': searched_value})
             else:
                 return render(request, 'plant_app/search_result.html')
         except ObjectDoesNotExist:
@@ -191,7 +208,9 @@ class FilterPlantView(View):
 
             plants_by_airpurifying = Plant.objects.filter(purifying__in=air_purifying)
 
-            all_plants = plants_by_category | plants_by_windowside | plants_by_homeroom | plants_by_roompart | plants_by_animalinfluence | plants_by_airpurifying
+            all_plants = plants_by_category | plants_by_windowside | plants_by_homeroom | plants_by_roompart | \
+                         plants_by_animalinfluence | plants_by_airpurifying
+
 
             list = []
             for plant in all_plants:
@@ -316,7 +335,7 @@ class AddToMyplantsView(LoginRequiredMixin, View):  # loginrequired ? permission
 
 
 # Deletes Plant objects from Userprofile whishlist
-class DeletePlantWishlistView(PermissionRequiredMixin, LoginRequiredMixin, View):  # page is forbidden withouth permission
+class DeletePlantWishlistView(PermissionRequiredMixin, LoginRequiredMixin, View): #page is forbidden withouth permission
 
     template_name = "plant_app/delete_plant_wishlist.html"
     permission_required = "home_app.change_userprofile"
@@ -402,7 +421,7 @@ class PriceCompareView(PermissionRequiredMixin, LoginRequiredMixin, View):  # ca
          user = User.objects.get(username=logged_user)
          compared_plant = Plant.objects.filter(slug=slug).first()
          compared_names = compared_plant.search_key.split()
-         query = reduce(operator.or_, (Q(name__contains=item) for item in compared_names))  # filter objects on the basis of search_key words list
+         query = reduce(operator.and_, (Q(name__contains=item) for item in compared_names))  # filter objects on the basis of search_key words list
          jungle_boogie_plants = ScrapyJungleBoogie.objects.filter(query)  # checkes plant's names connected with keywords from websites
          zielony_parapet_plants = ScrapyZielonyParapet.objects.filter(query)
          flora_point_plants = ScrapyFloraPoint.objects.filter(query)
@@ -460,5 +479,3 @@ class PriceCompareView(PermissionRequiredMixin, LoginRequiredMixin, View):  # ca
 #
 # process.crawl(PlantSpider)
 # process.start()
-
-

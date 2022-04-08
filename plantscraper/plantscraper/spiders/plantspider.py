@@ -7,7 +7,7 @@ from ..items import ScrapyFloraPointItem, ScrapyCocafloraItem
 # Class for scrapying JungleBoogie wepsite - passing item objects to pipeline and saving items to database
 class JungleBoogieSpider(scrapy.Spider):
     name = 'jungleboogie-plantscraper'
-   #allowed_domains = ['https://www.jungleboogie.pl']
+    #allowed_domains = ['https://www.jungleboogie.pl']
     start_urls = ['https://www.jungleboogie.pl/kategoria-produktu/rosliny/']
 
 
@@ -50,9 +50,9 @@ class JungleBoogieSpider(scrapy.Spider):
     #     if next_page is not None:
     #         yield response.follow(next_page, callback=self.parse)  # parse wraca do fukncji i przechodzi ja od nowa
 
+
     # Scrapying website
     def parse(self, response):
-     #  item = ScrapyJungleBoogieItem()
         for plant in response.css('li.wcpa_has_options, product, type-product'):
             item = ScrapyJungleBoogieItem()
             #item = ItemLoader(item=ScrapyJungleBoogieItem(), selector=plant)
@@ -62,14 +62,23 @@ class JungleBoogieSpider(scrapy.Spider):
             item['price'] = float((plant.css('span.woocommerce-Price-amount bdi::text').get())[0:-3].replace(',', '.').replace(' ', ''))  #float(price[0:-3].replace(',','.'))
             #item.add_css('picture', 'img.attachment-woocommerce_thumbnail, size-woocemmerce_thumbnail')
             #item['picture'] = (plant.css('img.attachment-woocommerce_thumbnail, size-woocemmerce_thumbnail data-src').attrib['src'])[26:]
-            #item['picture'] = (plant.css('img.attachment-woocommerce_thumbnail, size-woocemmerce_thumbnail data-src').attrib['src'])[26:]
+            item['picture'] = plant.css('img.attachment-woocommerce_thumbnail, size-woocemmerce_thumbnail data-src').attrib['src']
             #item.add_css('link', 'a.woocommerce-LoopProduct-link, woocommerce-loop-product__link')
             item['link'] = plant.css('a.woocommerce-LoopProduct-link, woocommerce-loop-product__link').attrib['href']
-            item['picture'] = (plant.css('img.attachment-woocommerce_thumbnail, size-woocemmerce_thumbnail data-src').attrib['src'])
+
             yield item
+        # for link in response.css('a.woocommerce-LoopProduct-link').attrib['href']:
+        #     yield response.follow(link.get(), callback=self.parse_plants)
 
+    # def parse_plants(self, response):
+    #     item = ScrapyJungleBoogieItem()
+    #     item['name'] = response.css('h1.product_title::text')
+    #     item['price'] = float(
+    #         (response.css('span.woocommerce-Price-amount bdi::text').get())[0:-3].replace(',', '.').replace(' ', ''))
+    #     item['picture'] = response.css('img.attachment-woocommerce_thumbnail, size-woocemmerce_thumbnail data-src').attrib['src']
+    #     yield item
 
-        # Getting the to next available searched page
+    # Getting the to next available searched page
         next_page = response.css('a.next, page-numbers').attrib['href']
         if next_page:
             yield response.follow(next_page, callback=self.parse)  # parse wraca do fukncji i przechodzi ja od nowa

@@ -10,7 +10,7 @@
     <p> Nazwa kategorii: <b>{{ plant.category.name }}</b> </p>
     <p> Opis: {{ plant.description}} </p>
     {% if plant.picture.url %}
-    <p> <img src="{{ plant.picture.url }}/"> </p>
+    <p> <img width=600 height=600 src="{{ plant.picture.url }}/"> </p>
     {% endif %}
     <p> Podlewanie: {{ plant.watering_description}} </p>
     <p> Nasłonecznienie: {{ plant.solar_description}} </p>

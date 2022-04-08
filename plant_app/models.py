@@ -155,7 +155,7 @@ class RoomPart(models.Model):
         super().save(*args, **kwargs)
 
 
-# Class Model for creating ScrapyJungleBoogie objects table
+#Class Model for creating ScrapyJungleBoogie objects table
 class ScrapyJungleBoogie(models.Model):
     name = models.CharField(max_length=225)
     link = models.TextField(blank=True)
@@ -163,19 +163,18 @@ class ScrapyJungleBoogie(models.Model):
     picture = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
-
-    # import base64
-    # base64_message = 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NzYiIGhlaWdodD0iNzY4IiB2aWV3Qm94PSIwIDAgNTc2IDc2OCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg=='
-    # base64_bytes = base64_message.encode('ascii')
-    # message_bytes = base64.b64decode(base64_bytes)
-    # message = message_bytes.decode('ascii')
-    # print(message)
-
+#
+#     # import base64
+#     # base64_message = 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NzYiIGhlaWdodD0iNzY4IiB2aWV3Qm94PSIwIDAgNTc2IDc2OCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg=='
+#     # base64_bytes = base64_message.encode('ascii')
+#     # message_bytes = base64.b64decode(base64_bytes)
+#     # message = message_bytes.decode('ascii')
+#     # print(message)
+#
     class Meta:
         verbose_name = 'Scrapped jungleboogie plants'
 
-# ScrapyJungleBoogie DjangoItem model
+#ScrapyJungleBoogie DjangoItem model
 class ScrapyJungleBoogieItem(DjangoItem):
     django_model = ScrapyJungleBoogie
 

@@ -163,10 +163,10 @@ class EditProfileView(PermissionRequiredMixin, LoginRequiredMixin, View):
             email = form.cleaned_data["email"]
             picture = form.cleaned_data["picture"]
             user.userprofile.phone = phone
-            if phone.isdigit():  # checking if phone number is a digit
+            if phone.isdigit() and len(phone)==9:  # checking if phone number is a digit
                 user.userprofile.save()
             else:
-                messages.error(request, "Numer telefonu nie został zmieniony! Numer musi składać się z samych cyfr")
+                messages.error(request, "Numer telefonu nie został zmieniony! Numer musi składać się z 9 cyfr!")
             if picture:
                 user.userprofile.picture = picture
                 user.userprofile.save()

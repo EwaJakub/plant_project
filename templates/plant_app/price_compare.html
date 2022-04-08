@@ -15,25 +15,7 @@
     </tr>
   </thead>
   <tbody>
-      {% for plant in jungle_boogie_plants %}
-      <form class="d-flex" method="POST" enctype='multipart/form-data'>
-    <tr>
-      <th scope="row">
-          {% load static %}
-        <img width="100" height="100" src="/static/Jungle_Boogie_poziom_pink_t.svg">
-      </th>
-      <td> <a class="nav-link text-secondary" href="{{ plant.link }}"> {{ plant.name }} </td>
-      <td>{{ plant.price }}</td>
-        {% if plant.picture.url %}
-      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture }}"></td>
-        {% endif %}
-    </tr>
-    </a>
-       {% empty %}
-          <tr>
-            <td colspan="4">Brak wyników w JungleBoogie</td>
-          </tr>
-  {% endfor %}
+        <form class="d-flex" method="POST" enctype='multipart/form-data'>
        {% for plant in zielony_parapet_plants %}
     <tr>
       <th scope="row">
@@ -89,6 +71,24 @@
        {% empty %}
           <tr>
             <td colspan="4">Brak wyników Cocaflorze</td>
+          </tr>
+  {% endfor %}
+            {% for plant in jungle_boogie_plants %}
+    <tr>
+      <th scope="row">
+          {% load static %}
+        <img width="100" height="100" src="/static/Jungle_Boogie_poziom_pink_t.svg">
+      </th>
+      <td> <a class="nav-link text-secondary" href="{{ plant.link }}"> {{ plant.name }} </td>
+      <td>{{ plant.price }}</td>
+        {% if plant.picture.url %}
+      <td><img width="120" height="120" class="img-thumbnail" src="{{ plant.picture }}"></td>
+        {% endif %}
+    </tr>
+    </a>
+       {% empty %}
+          <tr>
+            <td colspan="4">Brak wyników w JungleBoogie</td>
           </tr>
   {% endfor %}
       </form>

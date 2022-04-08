@@ -77,20 +77,3 @@ i uzupełnisz go.
 Jeśli wszystko skonfigurowałeś poprawnie, to pod adresem http://localhost:8000/index zobaczysz przykładową stronę.
 
 
-import mimetypes
-
-mimetypes.add_type("image/svg+xml", ".svg", True)
-mimetypes.add_type("image/svg+xml", ".svgz", True)
-
-
-
-
-django-base64 field
-
-
-Base64field !!!!1
-
-'testserver' 
-
-ALLOWED_HOSTS = ['testserver'] w settingsach
-

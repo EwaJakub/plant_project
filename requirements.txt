@@ -9,12 +9,8 @@ Pillow
 Scrapy
 django-scrapy
 flake8
-pip install django scrapy scrapyd python-scrapyd-api
-
 scrapy-djangoitem
-
 requests-html
-
-flake8
 pytest
 pytest-django
+
