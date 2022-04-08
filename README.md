@@ -1,5 +1,3 @@
-
-
 # Plant Project 
 
 ## Ustawienie wirtualnego środowiska
@@ -28,7 +26,9 @@ Projekt jest aplikacją służącą do wyszukiwania roślin zgodnie z naszymi pr
 ---
 
 ## Migracje
-Pamiętaj
+Pamiętaj o migracjach w projekcie ! Po utworzeniu projektu zrób pierwszą migrację, następnie aby utworzone przez Ciebie modele działały poprawnie, twórz nowa migrację każdorazowo, po dodaniu nowego modelu poprzez komendy:
+python manage.py makemigrations
+python manage.py migrate
 
 
 ## Plan uruchamianie aplikacji scrapy
