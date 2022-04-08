@@ -13,4 +13,3 @@ scrapy-djangoitem
 requests-html
 pytest
 pytest-django
-
